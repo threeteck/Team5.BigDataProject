@@ -239,5 +239,5 @@ fabric.properties
 # Manually added
 data/*.csv
 secrets/*
-models/*
+models/model*
 notebooks/*
