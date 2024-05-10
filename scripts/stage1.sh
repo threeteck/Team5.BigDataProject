@@ -16,7 +16,7 @@ sqoop import-all-tables \
     --compress \
     --as-avrodatafile \
     --compression-codec=snappy \
-    --m 1 > /dev/null
+    --m 1 > /dev/null 2> /dev/null
     
 mv *.java output/
 mv *.avsc output/
