@@ -1,0 +1,7 @@
+model,model_details,accuracy,precision,recall,f1_score
+RandomForestClassifier (Default),"RandomForestClassificationModel: uid=RandomForestClassifier_2fd5138ff472, numTrees=20, numClasses=6, numFeatures=18",0.7920744084588117,0.7927052863634219,0.795257444356844,0.7286466905225039
+RandomForestClassifier (Tuned),"RandomForestClassificationModel: uid=RandomForestClassifier_f5947feafb4c, numTrees=50, numClasses=6, numFeatures=18",0.9143282312925171,0.9175919617887331,0.9153771466715214,0.9149466537460097
+RandomForestClassifier (Tuned + PCA),"RandomForestClassificationModel: uid=RandomForestClassifier_fe3f3d5d09b1, numTrees=50, numClasses=6, numFeatures=10",0.7753974996965651,0.7591608690270101,0.772742439409106,0.7317765735113428
+LogisticRegression (Default),"LogisticRegressionModel: uid=LogisticRegression_6bb285ecad60, numClasses=6, numFeatures=18",0.7130137821685572,0.6411992810970313,0.7190346083788707,0.6662472392216368
+LogisticRegression (Tuned),"LogisticRegressionModel: uid=LogisticRegression_c2ffac8ade0a, numClasses=6, numFeatures=18",0.729172987076027,0.5835103565082985,0.7279699293703962,0.6239335365082483
+LogisticRegression (Tuned + PCA),"LogisticRegressionModel: uid=LogisticRegression_3a3c68a2ce95, numClasses=6, numFeatures=10",0.7259250258217389,0.5855151873951179,0.7276590577950462,0.6183751488911813

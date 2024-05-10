@@ -1,0 +1,64 @@
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP DATABASE IF EXISTS team5_projectdb CASCADE;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE DATABASE team5_projectdb LOCATION "project/hive/warehouse";
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> USE team5_projectdb;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE addresses STORED AS AVRO LOCATION 'project/warehouse/bitcoin_heist' TBLPROPERTIES ('avro.schema.url'='project/warehouse/avsc/bitcoin_heist.avsc');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM addresses LIMIT 10;
++-------------------------------------+-----------------+----------------+-------------------+------------------------+------------------+-------------------+----------------------+-------------------+------------------+
+|          addresses.address          | addresses.year  | addresses.day  | addresses.length  |    addresses.weight    | addresses.count  | addresses.looped  | addresses.neighbors  | addresses.income  | addresses.label  |
++-------------------------------------+-----------------+----------------+-------------------+------------------------+------------------+-------------------+----------------------+-------------------+------------------+
+| 111K8kZAEnJg245r2cM6y9zgJGHZtJPy6   | 2017            | 11             | 18                | 0.00833333333333333    | 1                | 0                 | 2                    | 100050000         | princetonCerber  |
+| 1123pJv8jzeFQaCV4w644pzQJzVWay2zcA  | 2016            | 132            | 44                | 2.44140625E-4          | 1                | 0                 | 1                    | 100000000         | princetonLocky   |
+| 112536im7hy6wtKbpH1qYDWtTyMRAcA2p7  | 2016            | 246            | 0                 | 1.0                    | 1                | 0                 | 2                    | 200000000         | princetonCerber  |
+| 1126eDRw2wqSkWosjTCre8cjjQW8sSeWH7  | 2016            | 322            | 72                | 0.00390625             | 1                | 0                 | 2                    | 71200000          | princetonCerber  |
+| 1129TSjKtx65E35GiUo4AYVeyo48twbrGX  | 2016            | 238            | 144               | 0.0728484071989931     | 456              | 0                 | 1                    | 200000000         | princetonLocky   |
+| 112AmFATxzhuSpvtz1hfpa3Zrw3BG276pc  | 2016            | 96             | 144               | 0.0846139993386755     | 2821             | 0                 | 1                    | 50000000          | princetonLocky   |
+| 112E91jxS2qrQY1z78LPWUWrLVFGqbYPQ1  | 2016            | 225            | 142               | 0.0020885186101272     | 881              | 0                 | 2                    | 100000000         | princetonCerber  |
+| 112eFykaD53KEkKeYW9KW8eWebZYSbt2f5  | 2016            | 324            | 78                | 0.00390625             | 1                | 0                 | 2                    | 100990000         | princetonCerber  |
+| 112FTiRdJjMrNgEtd4fvdoq3TC33Ah5Dep  | 2016            | 298            | 144               | 2.3028283088657        | 4220             | 0                 | 2                    | 80000000          | princetonCerber  |
+| 112GocBgFSnaote6krx828qaockFraD8mp  | 2016            | 62             | 112               | 3.7252902984619103E-9  | 1                | 0                 | 1                    | 50000000          | princetonLocky   |
++-------------------------------------+-----------------+----------------+-------------------+------------------------+------------------+-------------------+----------------------+-------------------+------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.dynamic.partition=true;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SET hive.exec.dynamic.partition.mode=nonstrict;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> CREATE EXTERNAL TABLE IF NOT EXISTS addresses_part (
+. . . . . . . . . . . . . . . . . . . . . . .>     address varchar(64),
+. . . . . . . . . . . . . . . . . . . . . . .>     day int,
+. . . . . . . . . . . . . . . . . . . . . . .>     length int,
+. . . . . . . . . . . . . . . . . . . . . . .>     weight float,
+. . . . . . . . . . . . . . . . . . . . . . .>     count int,
+. . . . . . . . . . . . . . . . . . . . . . .>     looped int,
+. . . . . . . . . . . . . . . . . . . . . . .>     neighbors int,
+. . . . . . . . . . . . . . . . . . . . . . .>     income bigint,
+. . . . . . . . . . . . . . . . . . . . . . .>     label varchar(64)
+. . . . . . . . . . . . . . . . . . . . . . .> ) 
+. . . . . . . . . . . . . . . . . . . . . . .> PARTITIONED BY (year int)
+. . . . . . . . . . . . . . . . . . . . . . .> CLUSTERED BY (label) into 6 buckets
+. . . . . . . . . . . . . . . . . . . . . . .> STORED AS AVRO LOCATION 'project/hive/warehouse/addresses_part'
+. . . . . . . . . . . . . . . . . . . . . . .> TBLPROPERTIES ('AVRO.COMPRESS'='SNAPPY');
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> INSERT OVERWRITE TABLE addresses_part
+. . . . . . . . . . . . . . . . . . . . . . .> PARTITION (year)
+. . . . . . . . . . . . . . . . . . . . . . .> SELECT address, day, length, weight, count, looped, neighbors, income, label, year
+. . . . . . . . . . . . . . . . . . . . . . .> FROM addresses;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> DROP TABLE IF EXISTS addresses;
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> SELECT * FROM addresses_part LIMIT 10;
++-------------------------------------+---------------------+------------------------+------------------------+-----------------------+------------------------+---------------------------+------------------------+-----------------------+----------------------+
+|       addresses_part.address        | addresses_part.day  | addresses_part.length  | addresses_part.weight  | addresses_part.count  | addresses_part.looped  | addresses_part.neighbors  | addresses_part.income  | addresses_part.label  | addresses_part.year  |
++-------------------------------------+---------------------+------------------------+------------------------+-----------------------+------------------------+---------------------------+------------------------+-----------------------+----------------------+
+| 1Bc2AtBe5Tw3MfYyErtGFk2eATb6HySRFE  | 259                 | 0                      | 1.0                    | 1                     | 0                      | 1                         | 50000000               | white                 | 2011                 |
+| 17NdbrSGoUotzeGCcMMCqnFkEvLymoou9j  | 36                  | 0                      | 0.5                    | 1                     | 0                      | 1                         | 100000000              | white                 | 2011                 |
+| 17MiQK1HttYA6P5b58LqvEDPubiLg56EV6  | 233                 | 48                     | 3.0517578E-5           | 1                     | 0                      | 2                         | 8711618218             | white                 | 2011                 |
+| 1Gw8Wwv7JJkjiTrJB9JwMzcLx7yDQ9fz7b  | 276                 | 54                     | 1.9073486E-6           | 1                     | 0                      | 2                         | 81900000               | white                 | 2011                 |
+| 1DfHeSNTugA1XGoCu76FUQAfE4aoGfPDS6  | 86                  | 0                      | 1.0                    | 1                     | 0                      | 1                         | 299000000              | white                 | 2011                 |
+| 1HrTYP1fwH7SvVfmbRSRiUAQqQ1XeaD8Mt  | 312                 | 0                      | 0.5                    | 1                     | 0                      | 1                         | 190000000              | white                 | 2011                 |
+| 1P8JbrDtoHQkwnsb2VPe9xCD95tPyMUzzh  | 46                  | 20                     | 0.00390625             | 1                     | 0                      | 2                         | 2889000000             | white                 | 2011                 |
+| 1K9WtLhuzgDXVunbvBkTyAfCvASjJgTV1H  | 331                 | 34                     | 0.043295544            | 4                     | 0                      | 2                         | 41100506               | white                 | 2011                 |
+| 17SdFrUigTNutfjpqM73XTZsKZqwyqoFkb  | 215                 | 22                     | 9.765625E-4            | 1                     | 0                      | 2                         | 179979814              | white                 | 2011                 |
+| 14448g19NaidyWcq8Et28TV6bwMH93mFaX  | 243                 | 0                      | 1.0                    | 1                     | 0                      | 2                         | 1170000000             | white                 | 2011                 |
++-------------------------------------+---------------------+------------------------+------------------------+-----------------------+------------------------+---------------------------+------------------------+-----------------------+----------------------+
+0: jdbc:hive2://hadoop-03.uni.innopolis.ru:10> 

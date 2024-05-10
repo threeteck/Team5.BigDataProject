@@ -1,0 +1,67 @@
+{
+  "type" : "record",
+  "name" : "bitcoin_heist",
+  "doc" : "Sqoop import of bitcoin_heist",
+  "fields" : [ {
+    "name" : "address",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "address",
+    "sqlType" : "12"
+  }, {
+    "name" : "year",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "year",
+    "sqlType" : "4"
+  }, {
+    "name" : "day",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "day",
+    "sqlType" : "4"
+  }, {
+    "name" : "length",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "length",
+    "sqlType" : "4"
+  }, {
+    "name" : "weight",
+    "type" : [ "null", "double" ],
+    "default" : null,
+    "columnName" : "weight",
+    "sqlType" : "8"
+  }, {
+    "name" : "count",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "count",
+    "sqlType" : "4"
+  }, {
+    "name" : "looped",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "looped",
+    "sqlType" : "4"
+  }, {
+    "name" : "neighbors",
+    "type" : [ "null", "int" ],
+    "default" : null,
+    "columnName" : "neighbors",
+    "sqlType" : "4"
+  }, {
+    "name" : "income",
+    "type" : [ "null", "long" ],
+    "default" : null,
+    "columnName" : "income",
+    "sqlType" : "-5"
+  }, {
+    "name" : "label",
+    "type" : [ "null", "string" ],
+    "default" : null,
+    "columnName" : "label",
+    "sqlType" : "12"
+  } ],
+  "tableName" : "bitcoin_heist"
+}
